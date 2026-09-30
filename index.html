@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wantic</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #fff;
+      color: #000;
+      font-family: Inter, sans-serif;
+      position: relative;
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      width: min(1080px, calc(100% - 48px));
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 72px;
+      padding: 64px 0 48px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 48px;
+    }
+    .copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: min(100%, 440px);
+    }
+    h1 {
+      margin: 0 0 24px;
+      width: 100%;
+      font-size: clamp(42px, 4.6vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 0.98;
+      transition: opacity 0.22s ease;
+    }
+    .mac {
+      margin: 10px 0 0;
+      font-size: 12px;
+    }
+    .demo-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .credit {
+      margin: 0;
+      font-size: 13px;
+    }
+    .credit a {
+      color: inherit;
+      text-underline-offset: 2px;
+    }
+    .about {
+      width: min(680px, calc(100% - 48px));
+      margin: 180px auto 0;
+    }
+    .about p {
+      margin: 0;
+      max-width: 28ch;
+      font-size: clamp(22px, 2.4vw, 28px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.35;
+    }
+    .faq {
+      width: min(680px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 220px 0 0;
+    }
+    .faq h2 {
+      margin: 0 0 56px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .faq details {
+      border-top: 1px solid #000;
+      padding: 28px 0;
+    }
+    .faq details:last-child { border-bottom: 1px solid #000; }
+    .faq summary {
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      list-style: none;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq details p {
+      margin: 16px 0 0;
+      max-width: 42ch;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; }
+      h1 { max-width: none; }
+      .about { margin-top: 120px; }
+      .faq { padding-top: 140px; }
+      .sombra { margin-top: 36vh; }
+    }
+    .sombra {
+      width: 100%;
+      height: 55vh;
+      margin-top: 56vh;
+      pointer-events: none;
+    }
+    .sombra svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+    .download {
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 8px;
+      background: #000;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .download:hover { opacity: 0.82; }
+
+    .panel {
+      width: 320px;
+      max-width: 100%;
+      padding: 14px 16px 12px;
+      border-radius: 12px;
+      background: #000;
+      color: #fff;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
+    }
+    .panel-head, .stat-row, .panel-foot, .country, .visitor-top {
+      display: flex;
+      align-items: center;
+    }
+    .panel-head { gap: 8px; margin-bottom: 14px; }
+    .favicon {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      background: #fff;
+      flex: none;
+    }
+    .domain { font-size: 13px; font-weight: 500; }
+    .demo { font-size: 10px; font-weight: 500; color: rgba(255, 255, 255, 0.55); }
+    .gear { margin-left: auto; color: rgba(255, 255, 255, 0.55); }
+    .segments {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-bottom: 16px;
+      padding: 2px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .segments button {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #fff;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      height: 26px;
+      cursor: pointer;
+    }
+    .segments button[aria-selected="true"] {
+      background: #fff;
+      color: #000;
+    }
+    .label, .section-label, .chart-title, .chart-hover, .meta, .panel-foot, .country b, .visitor-top b {
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .label { margin: 0; font-size: 12px; }
+    .live {
+      margin: 2px 0 0;
+      font-size: 44px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-row { margin-top: 20px; }
+    .stat { flex: 1; }
+    .stat + .stat { padding-left: 16px; border-left: 1px solid rgba(255, 255, 255, 0.16); }
+    .stat span { display: block; color: rgba(255, 255, 255, 0.55); font-size: 11px; }
+    .stat strong { display: block; margin-top: 2px; font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
+    .chart { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.16); }
+    .chart-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 8px;
+      min-height: 16px;
+    }
+    .chart-title, .chart-hover { margin: 0; font-size: 12px; }
+    .chart-hover { font-size: 11px; font-variant-numeric: tabular-nums; }
+    .bars { display: flex; align-items: flex-end; gap: 2px; height: 80px; }
+    .bars button {
+      flex: 1;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      display: flex;
+      align-items: flex-end;
+      cursor: default;
+    }
+    .bars button span {
+      display: block;
+      width: 100%;
+      height: max(2px, var(--h));
+      border-radius: 1px;
+      background: rgba(255, 255, 255, 0.35);
+      transition: height 0.7s ease, background 0.12s ease;
+    }
+    .bars button:hover span,
+    .bars button.is-hot span { background: rgba(255, 255, 255, 0.92); }
+    .panel-foot {
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 11px;
+    }
+    .refresh {
+      margin-left: auto;
+      width: 22px;
+      height: 22px;
+      border: 0;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .view[hidden] { display: none; }
+    .countries, .visitors ul { margin: 0; padding: 0; list-style: none; }
+    .section-label { margin: 0 0 6px; font-size: 11px; }
+    .country, .visitor-top { gap: 8px; font-size: 12px; }
+    .country { padding: 3px 0; }
+    .country b, .visitor-top b { margin-left: auto; font-weight: 500; font-variant-numeric: tabular-nums; }
+    .visitors { margin-top: 14px; }
+    .visitors li { padding: 6px 0; }
+    .visitor-top b { font-weight: 400; }
+    .visitor-top strong { font-weight: 500; }
+    .meta { margin: 2px 0 0; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <div class="copy">
+        <h1 id="headline">Visitors in your menu bar.</h1>
+        <a class="download" href="wantic.zip" download="wantic.zip">Download</a>
+        <p class="mac">macOS 27 and later</p>
+      </div>
+
+    <div class="demo-col">
+    <section class="panel" aria-label="Demo">
+      <div class="panel-head">
+        <span class="favicon" aria-hidden="true"></span>
+        <span class="domain">example.com</span>
+        <span class="demo">Demo</span>
+        <span class="gear" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.2 7.2 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.14.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.31.6.22l2.39-.96c.49.38 1.04.7 1.63.94l.36 2.54c.05.24.26.42.5.42h3.84c.24 0 .44-.18.49-.42l.36-2.54c.59-.24 1.14-.56 1.63-.94l2.39.96c.22.09.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/>
+          </svg>
+        </span>
+      </div>
+
+      <div class="segments" role="tablist">
+        <button type="button" role="tab" id="tab-overview" aria-selected="true">Overview</button>
+        <button type="button" role="tab" id="tab-recent" aria-selected="false">Recent activity</button>
+      </div>
+
+      <div class="view" id="overview">
+        <p class="label">Live visitors</p>
+        <p class="live" id="live" data-n="6">6</p>
+        <div class="stat-row">
+          <div class="stat"><span>Visitors today</span><strong id="today" data-n="214">214</strong></div>
+          <div class="stat"><span>Page views</span><strong id="views" data-n="401">401</strong></div>
+        </div>
+        <div class="chart">
+          <div class="chart-head">
+            <p class="chart-title">Last 24 hours</p>
+            <p class="chart-hover" id="chart-hover"></p>
+          </div>
+          <div class="bars" id="bars"></div>
+        </div>
+      </div>
+
+      <div class="view" id="recent" hidden>
+        <p class="section-label">Countries</p>
+        <ul class="countries">
+          <li class="country">Czech Republic <b data-n="58">58</b></li>
+          <li class="country">Germany <b data-n="37">37</b></li>
+          <li class="country">United States <b data-n="28">28</b></li>
+          <li class="country">Turkey <b data-n="18">18</b></li>
+          <li class="country">United Kingdom <b data-n="12">12</b></li>
+        </ul>
+        <div class="visitors">
+          <p class="section-label">Visitors</p>
+          <ul>
+            <li>
+              <div class="visitor-top"><strong>Czech Republic</strong> <b data-seconds="154">2m</b></div>
+              <p class="meta">google.com → / · Clicked Pricing, Get started</p>
+            </li>
+            <li>
+              <div class="visitor-top"><strong>Germany</strong> <b data-seconds="86">1m</b></div>
+              <p class="meta">news.ycombinator.com → /docs</p>
+            </li>
+            <li>
+              <div class="visitor-top"><strong>United States</strong> <b data-seconds="243">4m</b></div>
+              <p class="meta">Direct → /pricing · Clicked Start trial</p>
+            </li>
+            <li>
+              <div class="visitor-top"><strong>Turkey</strong> <b data-seconds="41">41s</b></div>
+              <p class="meta">twitter.com → /blog</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel-foot">
+        <span id="updated">Updated just now</span>
+        <button class="refresh" type="button" id="refresh" aria-label="Refresh">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M13.2 8A5.2 5.2 0 1 1 11 3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M11 1.6v2.4H8.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+    <p class="credit">more by <a href="https://vusal.me">vusal.me</a></p>
+    </div>
+    </div>
+  </main>
+  <section class="about">
+    <p>Wantic shows who is on your site, from the Mac menu bar. Live visitors, today, and recent visits. One script tag in the page head.</p>
+  </section>
+  <section class="faq" aria-label="FAQ">
+    <h2>FAQ</h2>
+    <details>
+      <summary>What does it do?</summary>
+      <p>It shows who is on your site, from the menu bar.</p>
+    </details>
+    <details>
+      <summary>Which Macs?</summary>
+      <p>macOS 27 and later.</p>
+    </details>
+    <details>
+      <summary>How does a site get counted?</summary>
+      <p>Paste one script tag into the page head.</p>
+    </details>
+    <details>
+      <summary>What is in the panel?</summary>
+      <p>Live visitors, today, the last 24 hours, countries, and recent visits.</p>
+    </details>
+    <details>
+      <summary>Does it open a window?</summary>
+      <p>No. The number stays next to the menu bar icon.</p>
+    </details>
+  </section>
+  <script>
+    const tabs = document.querySelectorAll('[role="tab"]');
+    const overview = document.getElementById("overview");
+    const recent = document.getElementById("recent");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const showRecent = tab.id === "tab-recent";
+        tabs.forEach((item) => item.setAttribute("aria-selected", String(item === tab)));
+        overview.hidden = showRecent;
+        recent.hidden = !showRecent;
+      });
+    });
+    const updated = document.getElementById("updated");
+    const liveEl = document.getElementById("live");
+    const todayEl = document.getElementById("today");
+    const viewsEl = document.getElementById("views");
+    const hoverEl = document.getElementById("chart-hover");
+    const barsEl = document.getElementById("bars");
+    const countryEls = [...document.querySelectorAll(".country b")];
+    const durationEls = [...document.querySelectorAll("[data-seconds]")];
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const shape = [2, 1, 1, 0, 1, 3, 6, 11, 18, 24, 29, 27, 22, 25, 31, 28, 21, 16, 12, 9, 7, 5, 4, 3];
+
+    function rand(min, max) {
+      return min + Math.floor(Math.random() * (max - min + 1));
+    }
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+    function durationLabel(seconds) {
+      seconds = Math.max(0, seconds);
+      if (seconds < 60) return seconds + "s";
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return minutes + "m";
+      const hours = Math.floor(minutes / 60);
+      const rest = minutes % 60;
+      return rest === 0 ? hours + "h" : hours + "h " + rest + "m";
+    }
+    function hourStart(offset) {
+      const date = new Date();
+      date.setMinutes(0, 0, 0);
+      date.setHours(date.getHours() + offset);
+      return date;
+    }
+    function hourText(date, visitors) {
+      const time = date.toLocaleTimeString([], { hour: "numeric" });
+      return time + " · " + visitors.toLocaleString();
+    }
+
+    const hours = Array.from({ length: 24 }, (_, index) => {
+      const start = hourStart(index - 23);
+      const base = shape[start.getHours()];
+      return { start, visitors: base + rand(0, 4) };
+    });
+
+    let hovered = -1;
+    const buttons = hours.map((hour, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      const bar = document.createElement("span");
+      button.append(bar);
+      button.addEventListener("pointerenter", () => showHour(index));
+      button.addEventListener("pointerleave", () => {
+        if (hovered === index) hideHour();
+      });
+      button.addEventListener("focus", () => showHour(index));
+      button.addEventListener("blur", () => {
+        if (hovered === index) hideHour();
+      });
+      barsEl.append(button);
+      return button;
+    });
+
+    function paintBars() {
+      const peak = Math.max(...hours.map((hour) => hour.visitors), 1);
+      hours.forEach((hour, index) => {
+        const button = buttons[index];
+        button.querySelector("span").style.setProperty("--h", (hour.visitors / peak * 100) + "%");
+        button.setAttribute("aria-label", hourText(hour.start, hour.visitors));
+      });
+      if (hovered >= 0) hoverEl.textContent = hourText(hours[hovered].start, hours[hovered].visitors);
+    }
+    function showHour(index) {
+      hovered = index;
+      buttons.forEach((button, i) => button.classList.toggle("is-hot", i === index));
+      hoverEl.textContent = hourText(hours[index].start, hours[index].visitors);
+    }
+    function hideHour() {
+      hovered = -1;
+      buttons.forEach((button) => button.classList.remove("is-hot"));
+      hoverEl.textContent = "";
+    }
+
+    const jobs = new Map();
+    let frame = 0;
+    function tick(now) {
+      frame = 0;
+      jobs.forEach((job, el) => {
+        const t = reduceMotion ? 1 : Math.min(1, (now - job.start) / job.dur);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const value = Math.round(job.from + (job.to - job.from) * eased);
+        el.textContent = job.format ? job.format(value) : value.toLocaleString();
+        if (t >= 1) jobs.delete(el);
+      });
+      if (jobs.size) frame = requestAnimationFrame(tick);
+    }
+    function animateTo(el, next, format) {
+      const from = Number(el.dataset.n);
+      el.dataset.n = String(next);
+      if (from === next) return;
+      jobs.set(el, { from, to: next, start: performance.now(), dur: 700, format });
+      if (!frame) frame = requestAnimationFrame(tick);
+    }
+
+    function stamp() {
+      updated.textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    function step() {
+      animateTo(liveEl, clamp(Number(liveEl.dataset.n) + rand(-2, 3), 1, 14));
+      const today = clamp(Number(todayEl.dataset.n) + rand(-12, 24), 90, 480);
+      animateTo(todayEl, today);
+      animateTo(viewsEl, today + rand(70, 260));
+      hours.forEach((hour) => {
+        const cap = shape[hour.start.getHours()] + 10;
+        hour.visitors = clamp(hour.visitors + rand(-2, 3), 0, Math.max(4, cap));
+      });
+      paintBars();
+      countryEls.forEach((el) => animateTo(el, clamp(Number(el.dataset.n) + rand(-3, 5), 1, 90)));
+      durationEls.forEach((el) => {
+        const next = clamp(Number(el.dataset.seconds) + rand(-20, 40), 8, 900);
+        el.dataset.seconds = String(next);
+        animateTo(el, next, durationLabel);
+      });
+      stamp();
+    }
+
+    durationEls.forEach((el) => { el.dataset.n = el.dataset.seconds; });
+    paintBars();
+    stamp();
+    document.getElementById("refresh").addEventListener("click", step);
+    setInterval(step, 2400);
+
+    const headline = document.getElementById("headline");
+    const lines = [
+      "Visitors in your menu bar.",
+      "Who is on your site.",
+      "A count beside the clock.",
+      "No window to keep open."
+    ];
+    let line = 0;
+    if (!reduceMotion) {
+      setInterval(() => {
+        headline.style.opacity = "0";
+        setTimeout(() => {
+          line = (line + 1) % lines.length;
+          headline.textContent = lines[line];
+          headline.style.opacity = "1";
+        }, 220);
+      }, 2800);
+    }
+
+    if (!reduceMotion) {
+      const trail = document.createElement("canvas");
+      trail.setAttribute("aria-hidden", "true");
+      trail.style.cssText = "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4";
+      document.body.append(trail);
+      const ctx = trail.getContext("2d");
+      const spots = [];
+      function fitTrail() {
+        trail.width = window.innerWidth;
+        trail.height = window.innerHeight;
+      }
+      fitTrail();
+      window.addEventListener("resize", fitTrail);
+      window.addEventListener("mousemove", (event) => {
+        spots.push({ x: event.clientX, y: event.clientY, life: 1 });
+        if (spots.length > 28) spots.shift();
+      });
+      function drawTrail() {
+        ctx.clearRect(0, 0, trail.width, trail.height);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        for (let i = 1; i < spots.length; i++) {
+          const from = spots[i - 1];
+          const to = spots[i];
+          to.life -= 0.018;
+          ctx.strokeStyle = "rgba(0,0,0," + Math.max(to.life, 0) * 0.65 + ")";
+          ctx.lineWidth = 10 * Math.max(to.life, 0);
+          ctx.beginPath();
+          ctx.moveTo(from.x, from.y);
+          ctx.lineTo(to.x, to.y);
+          ctx.stroke();
+        }
+        if (spots.length) spots[0].life -= 0.018;
+        while (spots.length && spots[0].life <= 0) spots.shift();
+        requestAnimationFrame(drawTrail);
+      }
+      drawTrail();
+    }
+  </script>
+  <div class="sombra" id="sombra" aria-hidden="true"></div>
+  <script src="sombra.js"></script>
+</body>
+</html>
